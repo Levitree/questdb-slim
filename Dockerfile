@@ -25,14 +25,17 @@ RUN apk add --no-cache binutils \
         --output /jre
 
 # Stage 2: Final minimal image
-FROM alpine:3.21
+# Using Debian Slim instead of Alpine because QuestDB's native libraries require glibc
+FROM debian:12-slim
 
 ENV JAVA_HOME=/opt/java \
     PATH="/opt/java/bin:$PATH" \
     QDB_ROOT=/var/lib/questdb
 
 # Install C++ standard library for QuestDB's native libraries
-RUN apk add --no-cache libstdc++
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libstdc++6 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy custom JRE
 COPY --from=builder /jre $JAVA_HOME

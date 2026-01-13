@@ -46,6 +46,9 @@ fi
 # Allow custom JVM options
 JAVA_OPTS="${JAVA_OPTS:--Xms512m -Xmx512m}"
 
+# Set LD_LIBRARY_PATH to help native library loading on Alpine
+export LD_LIBRARY_PATH="${JAVA_HOME}/lib:${LD_LIBRARY_PATH}"
+
 exec java ${JAVA_OPTS} \
     -p "/app/questdb.jar" \
     -m io.questdb/io.questdb.ServerMain \
