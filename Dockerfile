@@ -14,7 +14,7 @@ RUN wget -q "https://github.com/questdb/questdb/releases/download/${QUESTDB_VERS
 # Build minimal JRE with all required modules
 # Using comprehensive module list since jdeps may miss runtime dependencies
 RUN apk add --no-cache binutils \
-    && MODULES="java.base,java.logging,java.sql,java.naming,java.management,java.instrument,jdk.unsupported,jdk.crypto.ec,java.desktop" \
+    && MODULES="java.base,java.logging,java.sql,java.naming,java.management,java.instrument,jdk.unsupported,jdk.management,jdk.crypto.ec,java.desktop" \
     && echo "Using modules: $MODULES" \
     && jlink \
         --add-modules ${MODULES} \
