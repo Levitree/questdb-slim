@@ -11,12 +11,13 @@ RUN wget -q "https://github.com/questdb/questdb/releases/download/${QUESTDB_VERS
     && rm questdb-${QUESTDB_VERSION}-no-jre-bin.tar.gz \
     && rm -f public.zip
 
-# Find required modules and build minimal JRE
+# Build minimal JRE with all required modules
+# Using comprehensive module list since jdeps may miss runtime dependencies
 RUN apk add --no-cache binutils \
-    && MODULES=$(jdeps --ignore-missing-deps --print-module-deps --multi-release 21 questdb.jar 2>/dev/null || echo "java.base,java.logging,java.sql,java.naming,java.management,java.instrument,jdk.unsupported,jdk.crypto.ec,java.desktop") \
-    && echo "Detected modules: $MODULES" \
+    && MODULES="java.base,java.logging,java.sql,java.naming,java.management,java.instrument,jdk.unsupported,jdk.crypto.ec,java.desktop" \
+    && echo "Using modules: $MODULES" \
     && jlink \
-        --add-modules ${MODULES},java.sql,java.naming,java.management,java.instrument,jdk.unsupported,jdk.crypto.ec,java.desktop \
+        --add-modules ${MODULES} \
         --strip-debug \
         --no-man-pages \
         --no-header-files \
@@ -29,6 +30,9 @@ FROM alpine:3.21
 ENV JAVA_HOME=/opt/java \
     PATH="/opt/java/bin:$PATH" \
     QDB_ROOT=/var/lib/questdb
+
+# Install C++ standard library for QuestDB's native libraries
+RUN apk add --no-cache libstdc++
 
 # Copy custom JRE
 COPY --from=builder /jre $JAVA_HOME
