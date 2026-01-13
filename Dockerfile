@@ -13,10 +13,10 @@ RUN wget -q "https://github.com/questdb/questdb/releases/download/${QUESTDB_VERS
 
 # Find required modules and build minimal JRE
 RUN apk add --no-cache binutils \
-    && MODULES=$(jdeps --ignore-missing-deps --print-module-deps --multi-release 21 questdb.jar 2>/dev/null || echo "java.base,java.logging,java.sql,java.naming,java.management,java.instrument,jdk.unsupported,jdk.crypto.ec") \
+    && MODULES=$(jdeps --ignore-missing-deps --print-module-deps --multi-release 21 questdb.jar 2>/dev/null || echo "java.base,java.logging,java.sql,java.naming,java.management,java.instrument,jdk.unsupported,jdk.crypto.ec,java.desktop") \
     && echo "Detected modules: $MODULES" \
     && jlink \
-        --add-modules ${MODULES},jdk.crypto.ec \
+        --add-modules ${MODULES},jdk.crypto.ec,java.desktop \
         --strip-debug \
         --no-man-pages \
         --no-header-files \
