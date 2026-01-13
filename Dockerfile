@@ -16,7 +16,7 @@ RUN apk add --no-cache binutils \
     && MODULES=$(jdeps --ignore-missing-deps --print-module-deps --multi-release 21 questdb.jar 2>/dev/null || echo "java.base,java.logging,java.sql,java.naming,java.management,java.instrument,jdk.unsupported,jdk.crypto.ec,java.desktop") \
     && echo "Detected modules: $MODULES" \
     && jlink \
-        --add-modules ${MODULES},jdk.crypto.ec,java.desktop \
+        --add-modules ${MODULES},java.sql,java.naming,java.management,java.instrument,jdk.unsupported,jdk.crypto.ec,java.desktop \
         --strip-debug \
         --no-man-pages \
         --no-header-files \
